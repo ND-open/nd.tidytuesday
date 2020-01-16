@@ -1,0 +1,23 @@
+Package: nd.tidytuesday
+Title: Tidy Tuesday visualisation
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Camille",
+           family = "Bonamy",
+           role = c("aut", "cre"),
+           email = "cb@nextdecision.fr")
+Description: The goal is to share codes and vizualisations practices.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    ggplot2,
+    magrittr,
+    dplyr,
+    tidyr,
+    forcats
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
