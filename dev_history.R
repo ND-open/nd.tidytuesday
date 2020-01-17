@@ -43,5 +43,11 @@ usethis::use_test(name = "test_tidy_qual", open = FALSE)
 # --- deploy on Github : https://pkgdown.r-lib.org/articles/pkgdown.html
 # Run once to configure package to use pkgdown
 usethis::use_pkgdown()
-# Run to build the website
+# Run to build the website -- manual
 pkgdown::build_site()
+
+
+# --- set up github actions -- automate workflow check pkg + build site
+remotes::install_github("r-lib/ghactions")
+
+ghactions::use_ghactions(workflow = ghactions::website())
