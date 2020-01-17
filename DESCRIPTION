@@ -15,9 +15,18 @@ Imports:
     magrittr,
     dplyr,
     tidyr,
-    forcats
-Suggests: 
+    forcats,
+    purrr,
+    tibble,
+    pander,
     knitr,
-    rmarkdown
+    stringr,
+    lubridate,
+    naniar,
+    readr,
+    visdat
+Suggests: 
+    rmarkdown,
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

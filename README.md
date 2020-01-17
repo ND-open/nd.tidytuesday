@@ -1,11 +1,11 @@
 Comment utiliser ce package
 ================
 
-Le Tidy Tuesday est un projet hebdomadaire, née de la communauté `R4DS
+Le Tidy Tuesday est un projet hebdomadaire, issu de la communauté `R4DS
 Online Learning Community` et du livre `R for Data Science` (accessible
 gratuitement : <https://r4ds.had.co.nz/>). Les données proposées sont un
 prétexte pour s’entraîner à manipuler, nettoyer et visualiser des jeux
-de données. Certaines visualisation sont notament postée sur Twitter
+de données. Certaines visualisations sont notamment postée sur Twitter
 (<https://twitter.com/hashtag/tidytuesday?lang=en>).
 
 ## Objectifs
@@ -73,19 +73,19 @@ base_summary
     ##         if(sum( unlist( lapply(df, is.numeric) ) ) < ncol(df)){stop("Some variable is not numeric.")}
     ##         
     ##         lapply(df, function(x) c("mean" = round(mean(x), 2), 
-    ##                                 "var" = round(var(x), 2),
-    ##                                 "sd" = round(sd(x), 2),
+    ##                                 "var" = round(stats::var(x), 2),
+    ##                                 "sd" = round(stats::sd(x), 2),
     ##                                 "min" = min(x),
-    ##                                 "1q" = quantile(x, .25, names = FALSE),
-    ##                                 "median" = quantile(x, .5, names = FALSE),
-    ##                                 "3q" = quantile(x, .75, names = FALSE),
+    ##                                 "1q" = stats::quantile(x, .25, names = FALSE),
+    ##                                 "median" = stats::quantile(x, .5, names = FALSE),
+    ##                                 "3q" = stats::quantile(x, .75, names = FALSE),
     ##                                 "max" = max(x)
     ##         )
     ##         ) %>% 
     ##                 cbind.data.frame() %>% 
     ##                 t() %>% tibble::as_tibble(rownames = "variable")
     ## }
-    ## <bytecode: 0x0000000018003700>
+    ## <bytecode: 0x000000001803aff8>
     ## <environment: namespace:nd.tidytuesday>
 
 ## Comment réutiliser un morceau de code
@@ -98,8 +98,8 @@ On évite ainsi les problèmes d’OS, de versions (de R, des packages, …).
 
 ## Contribuer au projet
 
-Toute contribution sera vivement appréciée, que ce soit pour proposer
-des fonctions, des vizs ou de l’optimisation de code \!
+Toute contribution est vivement appréciée, que ce soit pour proposer des
+fonctions, des vizs ou de l’optimisation de code \!
 
 Pour cela il suffit d’installer `Git`, de cloner le projet, effectuer
 **dans une nouvelle branche git** les modifications/ajouts voulus puis

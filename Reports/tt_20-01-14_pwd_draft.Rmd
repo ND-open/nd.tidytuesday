@@ -1,0 +1,257 @@
+---
+title: "Tidy tuesday 20-01-14 : the passwords dataset"
+output: 
+  md_document:
+    toc: TRUE
+---
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+collapse = TRUE,
+comment = "#>",
+fig.width = 6,
+fig.height = 5
+)
+```
+
+
+```{r setup, warning=FALSE, message=FALSE}
+library(nd.tidytuesday)
+library(dplyr)
+library(ggplot2)
+```
+
+
+## Data import and inspection
+
+One can obtain the metadata table using `datapasta`'s R package addin and copying the table available at 
+
+```{r metadata}
+meta <- data.frame(stringsAsFactors=FALSE,
+                   variable = c("rank", "password", "category", "value", "time_unit",
+                                "offline_crack_sec", "rank_alt", "strength", "font_size"),
+                   class = c("double", "character", "character", "double", "character",
+                             "double", "double", "double", "double"),
+                   description = c("popularity in their database of released passwords",
+                                   "Actual text of the password",
+                                   "What category does the password fall in to?", "Time to crack by online guessing",
+                                   "Time unit to match with value", "Time to crack offline in seconds",
+                                   "Rank 2", "Strength = quality of password where 10 is highest,
+                   1 is lowest,
+                   please note that these are relative to these generally bad passwords", "Used to create the graphic for KIB")
+)
+meta <- as_tibble(meta)
+
+pander::pander(meta)
+```
+
+the `readr::read_csv` function gives some information on how the data was processed, with here no errors or warnings.
+
+```{r data import}
+passwords <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-14/passwords.csv')
+```
+
+The passwords dataset has 507 rows * 9 variables. It is not tidy, if we want to use the `value` variable of online guessing we need to add the `time_unit` information to it.
+
+```{r data inspect}
+passwords %>% 
+  glimpse()
+```
+
+Glimpse of the passwords :
+
+```{r data glimpse}
+passwords %>% head() %>% pander::pander()
+```
+
+
+## Quality check
+
+```{r data quality}
+# --- using base R function
+# passwords %>% 
+#   qual_fun(.)
+
+# --- tidyverse approach
+passwords %>% 
+  tidy_qual() %>% 
+  pander::pander()
+```
+
+The 7 missing values are the in the same rows :
+
+```{r NA}
+passwords %>% 
+  filter(!complete.cases(passwords))
+```
+
+In total those missing values represent less than 2% of the total of data.
+
+```{r naniar vis}
+passwords %>% 
+  naniar::vis_miss()
+
+passwords %>% 
+  visdat::vis_dat()
+```
+
+
+## Cleaning
+
+To fix the types, the character variables are set as factors.
+
+```{r types}
+psw_clean <-
+  passwords %>% 
+  filter(complete.cases(passwords)) %>% 
+  mutate_if(is.character, factor) %>% 
+  tidyr::unite(data = ., col = "online_duration", value, time_unit, sep = " ", remove = FALSE) %>% 
+  mutate(online_duration = lubridate::duration(num = online_duration),
+         od_num = as.numeric(online_duration)
+  )
+```
+
+The value and time unit are united in the `online_time` variable with seconds as unit.
+
+```{r unit time value}
+# summary(psw_clean)
+log_df <- tibble(
+  unit = c("sec", "min", "h", "day", "week", "month", "year", "10years", "100years"),
+  logv = log(c( 1, 60, 3600, 24*3600, 7*24*3600, 30*24*3600, 
+                365.25*24*3600, 10*365.25*24*3600, 100*365.25*24*3600) ),
+  y = 0.65
+)
+
+# exp(30)/(20*365.25*24*3600)
+
+psw_clean %>% 
+  ggplot(aes(x = log(od_num), y = stat(density))) + 
+  geom_histogram() +
+  geom_vline(xintercept = log_df$logv, colour = "red") +
+  geom_label(data = log_df, aes(x = logv, y = y, label = unit)) + # inherit.aes = FALSE,
+theme_light() + xlab("log(duration)") + ylab("Density") +
+  ggtitle("Density historam of the log duration to hack passwords")
+```
+
+## Univariate study
+
+There are 10 unique categories and 7 unit of time. Passwords are unique individuals in this dataset.
+
+```{r factor analysis}
+psw_clean %>% 
+  summarise_if(.tbl = .,.predicate = is.factor, .funs = list("nb_u" = ~length(unique(.))) ) %>% 
+  mutate(indic = "nb unique") %>% 
+  select(indic, everything())
+```
+
+
+1/3 of the passwords are names, most are actually dictionnary words.
+
+```{r category}
+cat_stat <- psw_clean %>%
+  group_by(category) %>% 
+  summarise(nb = n(),
+            pct = nb/nrow(psw_clean)*100) %>% 
+  arrange(-nb)
+
+cat_stat %>% 
+  ggplot(aes(x = forcats::fct_reorder(.f = category, .x = pct), y = pct)) + 
+  geom_col(fill = "#4F62DB") +
+  geom_text(aes(y = pct + 2, label = pct), size = 4) +
+  xlab("Category of passord") + ylab("Percentage") +
+  ggtitle("Repartition of the passwords per categories") +
+  theme_light() +
+  coord_flip()
+```
+
+Nearly 70% of the passwords considered are crackable online in less than a week, 20% are guessable within a day.
+
+```{r time unit}
+tu_stat <- psw_clean %>%
+  group_by(time_unit) %>% 
+  summarise(nb = n(),
+            pct = nb/nrow(psw_clean)*100) %>% 
+  arrange(-nb)
+
+tu_stat %>% 
+  ggplot(aes(x = forcats::fct_reorder(.f = time_unit, .x = pct), y = pct)) + 
+  geom_col(fill = "#D91515") +
+  geom_text(aes(y = pct + 2, label = pct)) +
+  xlab("Time unit to crack a passord") + ylab("Percentage") +
+  ggtitle("Repartition of the time unit required to crack passwords") +
+  theme_light() +
+  coord_flip()
+```
+
+
+We can look at the character type distribution in the passwords.
+
+```{r passwords by character types}
+library(stringr)
+
+passwd_type <- psw_clean %>% 
+  mutate(password = as.character(password)) %>% 
+  mutate("nb_char" = nchar(password),
+         num_part = purrr::map_chr( stringr::str_extract_all(string = password, pattern = "[:digit:]"),
+                                    function(x) paste(x, collapse = "") ),
+         nchar_num = nchar(num_part),
+         
+         alpha_part = purrr::map_chr( stringr::str_extract_all(string = password, pattern = "[:alpha:]"),
+                                      function(x) paste(x, collapse = "") ),
+         nchar_alpha = nchar(alpha_part),
+         
+         punct_part = purrr::map_chr( stringr::str_extract_all(string = password, pattern = "[:punct:]"),
+                                      function(x) paste(x, collapse = "") ),
+         nchar_punct = nchar(punct_part),
+         
+         lower_part = purrr::map_chr( stringr::str_extract_all(string = password, pattern = "[:lower:]"),
+                                      function(x) paste(x, collapse = "") ),
+         nchar_lower = nchar(lower_part),
+         
+         upper_part = purrr::map_chr( stringr::str_extract_all(string = password, pattern = "[:upper:]"),
+                                      function(x) paste(x, collapse = "") ),
+         nchar_upper = nchar(upper_part)
+  )
+```
+
+The data contains passwords with numeric and alpha character. All of alpha character use lower case.
+
+```{r passwords type stats}
+passwd_type %>%
+  select(dplyr::starts_with("nchar")) %>%
+  base_summary() %>% 
+  pander::pander()
+```
+
+One can suspect a linear relation between the online and offline time of cracking.
+
+```{r passwords viz}
+# passwd_type %>% View()
+passwd_type %>% # glimpse()
+  ggplot(aes(x = od_num, y = offline_crack_sec, colour = strength, size = factor(nb_char)) ) +
+  geom_point(alpha = .1)
+# facet_grid("category", scales = "free")
+```
+
+This is confirmed passing to (log ,log) scaled plot. The formula obatined is 
+
+$$log(offline) = -18.322 + 0.987 \times log(online)$$ 
+
+```{r passwords viz log}
+df_min <- passwd_type %>% transmute(x = log(od_num), y = log(offline_crack_sec))
+# summary(df_min)
+lm_mod <- lm(y ~ x, df_min)
+# summary(lm_mod)
+df_min$y_hat <- predict.lm(lm_mod, newdata = df_min)
+
+passwd_type %>% # glimpse()
+  ggplot(aes(x = log(od_num), y = log(offline_crack_sec), colour = strength, size = nb_char ) ) +
+  geom_point(alpha = .1) +
+  geom_line(data = df_min, aes(x, y_hat), inherit.aes = FALSE) +
+  xlab("Log online time") + ylab("Log offline time") +
+  ggtitle("Evolution of the log offline time depending on the log online time") +
+  theme_classic()
+```
+
+
+

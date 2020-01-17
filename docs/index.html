@@ -53,7 +53,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/tt_2020-01-14_passwords.html">Tidy Tuesday 2020-01-14 : the passwords dataset</a>
+      <a href="articles/tt_20-01-14_passwords.html">Tidy tuesday 20-01-14 : the passwords dataset</a>
     </li>
   </ul>
 </li>
@@ -73,7 +73,7 @@
 
     
     
-<p>Le Tidy Tuesday est un projet hebdomadaire, née de la communauté <code>R4DS Online Learning Community</code> et du livre <code>R for Data Science</code> (accessible gratuitement : <a href="https://r4ds.had.co.nz/" class="uri">https://r4ds.had.co.nz/</a>). Les données proposées sont un prétexte pour s’entraîner à manipuler, nettoyer et visualiser des jeux de données. Certaines visualisation sont notament postée sur Twitter (<a href="https://twitter.com/hashtag/tidytuesday?lang=en" class="uri">https://twitter.com/hashtag/tidytuesday?lang=en</a>).</p>
+<p>Le Tidy Tuesday est un projet hebdomadaire, issu de la communauté <code>R4DS Online Learning Community</code> et du livre <code>R for Data Science</code> (accessible gratuitement : <a href="https://r4ds.had.co.nz/" class="uri">https://r4ds.had.co.nz/</a>). Les données proposées sont un prétexte pour s’entraîner à manipuler, nettoyer et visualiser des jeux de données. Certaines visualisations sont notamment postée sur Twitter (<a href="https://twitter.com/hashtag/tidytuesday?lang=en" class="uri">https://twitter.com/hashtag/tidytuesday?lang=en</a>).</p>
 <div id="objectifs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#objectifs" class="anchor"></a>Objectifs</h2>
@@ -131,19 +131,19 @@
 ##         if(sum( unlist( lapply(df, is.numeric) ) ) &lt; ncol(df)){stop("Some variable is not numeric.")}
 ##         
 ##         lapply(df, function(x) c("mean" = round(mean(x), 2), 
-##                                 "var" = round(var(x), 2),
-##                                 "sd" = round(sd(x), 2),
+##                                 "var" = round(stats::var(x), 2),
+##                                 "sd" = round(stats::sd(x), 2),
 ##                                 "min" = min(x),
-##                                 "1q" = quantile(x, .25, names = FALSE),
-##                                 "median" = quantile(x, .5, names = FALSE),
-##                                 "3q" = quantile(x, .75, names = FALSE),
+##                                 "1q" = stats::quantile(x, .25, names = FALSE),
+##                                 "median" = stats::quantile(x, .5, names = FALSE),
+##                                 "3q" = stats::quantile(x, .75, names = FALSE),
 ##                                 "max" = max(x)
 ##         )
 ##         ) %&gt;% 
 ##                 cbind.data.frame() %&gt;% 
 ##                 t() %&gt;% tibble::as_tibble(rownames = "variable")
 ## }
-## &lt;bytecode: 0x000000001a059650&gt;
+## &lt;bytecode: 0x0000000019a587d8&gt;
 ## &lt;environment: namespace:nd.tidytuesday&gt;</code></pre>
 </div>
 <div id="comment-reutiliser-un-morceau-de-code" class="section level2">
@@ -154,7 +154,7 @@
 <div id="contribuer-au-projet" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contribuer-au-projet" class="anchor"></a>Contribuer au projet</h2>
-<p>Toute contribution sera vivement appréciée, que ce soit pour proposer des fonctions, des vizs ou de l’optimisation de code !</p>
+<p>Toute contribution est vivement appréciée, que ce soit pour proposer des fonctions, des vizs ou de l’optimisation de code !</p>
 <p>Pour cela il suffit d’installer <code>Git</code>, de cloner le projet, effectuer <strong>dans une nouvelle branche git</strong> les modifications/ajouts voulus puis de pousser les changements sur le repository. La génération du site web statique est automatique.</p>
 </div>
   </div>

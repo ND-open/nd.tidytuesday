@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-Le Tidy Tuesday est un projet hebdomadaire, née de la communauté `R4DS Online Learning Community` et du livre `R for Data Science` (accessible gratuitement : https://r4ds.had.co.nz/). Les données proposées sont un prétexte pour s'entraîner à manipuler, nettoyer et visualiser des jeux de données. Certaines visualisation sont notament postée sur Twitter (https://twitter.com/hashtag/tidytuesday?lang=en).
+Le Tidy Tuesday est un projet hebdomadaire, issu de la communauté `R4DS Online Learning Community` et du livre `R for Data Science` (accessible gratuitement : https://r4ds.had.co.nz/). Les données proposées sont un prétexte pour s'entraîner à manipuler, nettoyer et visualiser des jeux de données. Certaines visualisations sont notamment postée sur Twitter (https://twitter.com/hashtag/tidytuesday?lang=en).
 
 ## Objectifs
 
@@ -20,6 +20,7 @@ Le Tidy Tuesday est un projet hebdomadaire, née de la communauté `R4DS Online 
     + visualisation
 
   * alimenter une base de connaissance commune (Github) et mettre en place des bonnes pratiques
+  
   * faire travailler en équipe les R-istes
     
 
@@ -60,7 +61,7 @@ Si un morceau de code doit être copié-collé une fois, une bonne pratique est 
 
 ## Contribuer au projet
 
-Toute contribution sera vivement appréciée, que ce soit pour proposer des fonctions, des vizs ou de l'optimisation de code !
+Toute contribution est vivement appréciée, que ce soit pour proposer des fonctions, des vizs ou de l'optimisation de code !
 
 Pour cela il suffit d'installer `Git`, de cloner le projet, effectuer __dans une nouvelle branche git__ les modifications/ajouts voulus puis de pousser les changements sur le repository. La génération du site web statique est automatique.
 
