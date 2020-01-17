@@ -7,6 +7,7 @@ usethis::use_git()
 usethis::use_build_ignore("dev_history.R")
 usethis::use_build_ignore("README.Rmd")
 usethis::use_build_ignore("Reports")
+usethis::use_build_ignore(".github")
 
 # --- description
 usethis::use_description()

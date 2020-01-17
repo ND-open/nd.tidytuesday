@@ -17,12 +17,15 @@ jobs:
                   -e 'remotes::install_deps(dependencies = TRUE)' \
                   -e 'remotes::install_github("jimhester/pkgdown@github-actions-deploy")' \
                   -e 'remotes::install_cran("knitr")'
-      - name: Build package
-        run: R CMD BUILD .
+#      - name: Build package
+#        run: R CMD BUILD .
+#      - name: Install package
+#        run: R CMD INSTALL .
       - name: Check package
-        run: R CMD CHECK .
-      - name: Install package
-        run: R CMD INSTALL .
+#        run: R CMD CHECK .
+# following docs recomentation with devtools::check() ( http://r-pkgs.had.co.nz/check.html )
+        run: |
+          Rscript -e 'devtools::check()'
       - name: render README
         run: |
           Rscript -e 'knitr::render_markdown(README.Rmd)'
