@@ -17,10 +17,12 @@ jobs:
                   -e 'remotes::install_deps(dependencies = TRUE)' \
                   -e 'remotes::install_github("jimhester/pkgdown@github-actions-deploy")' \
                   -e 'remotes::install_cran("knitr")'
-      - name: Install package
-        run: R CMD INSTALL .
+      - name: Build package
+        run: R CMD BUILD .
       - name: Check package
         run: R CMD CHECK .
+      - name: Install package
+        run: R CMD INSTALL .
       - name: render README
         run: |
           Rscript -e 'knitr::render_markdown(README.Rmd)'
