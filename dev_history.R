@@ -16,6 +16,12 @@ usethis::use_mit_license("ND")
 
 usethis::use_vignette("tt_2020-01-14_Passwords")
 
+# --- !!! To build vignette in package index use
+devtools::install(build_vignettes = TRUE)
+# check it went well
+tools::pkgVignettes(dir = '.')
+browseVignettes("nd.tidytuesday")
+
 # --- packages needed
 usethis::use_package("ggplot2")
 usethis::use_package("magrittr")

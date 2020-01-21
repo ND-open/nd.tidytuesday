@@ -19,14 +19,15 @@ Imports:
     purrr,
     tibble,
     pander,
-    knitr,
     stringr,
     lubridate,
     naniar,
     readr,
     visdat
-Suggests: 
+Suggests:
+    knitr,
     rmarkdown,
     testthat (>= 2.1.0)
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
